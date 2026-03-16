@@ -3,10 +3,11 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { JwtModule } from "@nestjs/jwt";
 import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import { User } from "src/user/user.entity";
+import { APP_PIPE } from "@nestjs/core";
+import { ZodValidationPipe } from "nestjs-zod";
 
 @Module({
   imports: [
@@ -14,7 +15,6 @@ import { User } from "src/user/user.entity";
       envFilePath: [`.env.${process.env.NODE_ENV}`, ".env"],
       isGlobal: true,
     }),
-
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -30,19 +30,16 @@ import { User } from "src/user/user.entity";
         synchronize: configService.get("NODE_ENV") !== "prod",
       }),
     }),
-
-    JwtModule.registerAsync({
-      global: true,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>("JWT_SECRET"),
-        signOptions: { expiresIn: "15Min" },
-      }),
-    }),
     AuthModule,
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useClass: ZodValidationPipe,
+    },
+  ],
 })
 export class AppModule {}

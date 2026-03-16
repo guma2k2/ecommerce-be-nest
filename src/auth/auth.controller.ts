@@ -1,21 +1,19 @@
-import { Controller, Post, Body, UsePipes } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { LoginDto } from "src/auth/dto/login.dto";
-import { ZodValidationPipe } from "nestjs-zod";
-import { RegisterDto } from "src/auth/dto/register.dto";
+import { Controller, Post, Body } from "@nestjs/common";
+import { AuthService } from "./services/auth.service";
+import { SignUpDto } from "src/auth/dto/sign-up.dto";
+import { SignInDto } from "src/auth/dto/sign-in.dto";
 
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post("/login")
-  async login(@Body(ZodValidationPipe) body: LoginDto) {
-    return this.authService.login(body);
+  @Post("sign-up")
+  signUp(@Body() signUpDto: SignUpDto) {
+    return this.authService.signUp(signUpDto);
   }
 
-  @Post("/register")
-  async register(@Body(ZodValidationPipe) body: RegisterDto) {
-    console.log("body", body);
-    return this.authService.register(body);
+  @Post("sign-in")
+  signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto);
   }
 }
