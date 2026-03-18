@@ -26,16 +26,22 @@ export class AuthenticationGuard implements CanActivate {
     ]) ?? [AuthenticationGuard.defaultAuthType];
 
     const guards = authTypes.map((type) => this.authTypeGuardMap[type]).flat();
-    let error = new UnauthorizedException();
-    for (const instance of guards) {
-      const canActivate = await Promise.resolve(instance.canActivate(context)).catch(
-        (err) => (error = err),
-      );
-      if (canActivate) {
-        return true;
+
+    let error: any;
+
+    for (const guard of guards) {
+      try {
+        const result = await Promise.resolve(guard.canActivate(context));
+        if (result) return true;
+      } catch (err) {
+        error = err;
       }
     }
 
-    throw error;
+    if (error) {
+      throw error;
+    }
+
+    throw new UnauthorizedException();
   }
 }

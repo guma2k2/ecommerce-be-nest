@@ -34,7 +34,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else {
       message = "Internal server error";
     }
-    // console.error("Unhandled exception:", exception);
+    console.error("Unhandled exception:", exception);
     httpAdapter.reply(response, message, status);
   }
 }
