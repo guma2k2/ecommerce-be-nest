@@ -1,10 +1,10 @@
-import { BaseEntity, Column, Entity } from "typeorm";
+import { BaseEntity } from "src/common/base.entity";
+import { User } from "src/user/user.entity";
+import { Entity, JoinColumn, OneToOne } from "typeorm";
 
 @Entity()
 export class RefreshToken extends BaseEntity {
-  @Column()
-  token: string;
-
-  @Column()
-  expires_at: Date;
+  @OneToOne(() => User)
+  @JoinColumn({ name: "user_id" })
+  user: User;
 }

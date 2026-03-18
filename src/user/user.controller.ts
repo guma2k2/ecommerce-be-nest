@@ -1,10 +1,12 @@
 import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
-import { UserRole } from "src/common/enums/user.enum";
+import { Auth } from "src/auth/decorators/auth.decorator";
+import { AuthType } from "src/common/enums/auth-type.enum";
 import { ResponseUtil } from "src/common/utils/response.util";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
 import { UserService } from "src/user/user.service";
 
 @Controller("user")
+@Auth(AuthType.Bearer)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
