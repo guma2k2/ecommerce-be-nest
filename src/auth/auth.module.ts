@@ -11,20 +11,20 @@ import { AuthenticationGuard } from "src/auth/guards/authentication/authenticati
 import { ConfigModule } from "@nestjs/config";
 
 @Module({
-  imports: [
-    UserModule,
-    JwtModule.registerAsync(jwtConfig.asProvider()),
-    ConfigModule.forFeature(jwtConfig),
-  ],
-  controllers: [AuthController],
-  providers: [
-    AuthService,
-    BcryptService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthenticationGuard,
-    },
-    AccessTokenGuard,
-  ],
+    imports: [
+        UserModule,
+        JwtModule.registerAsync(jwtConfig.asProvider()),
+        ConfigModule.forFeature(jwtConfig),
+    ],
+    controllers: [AuthController],
+    providers: [
+        AuthService,
+        BcryptService,
+        {
+            provide: APP_GUARD,
+            useClass: AuthenticationGuard,
+        },
+        AccessTokenGuard,
+    ],
 })
 export class AuthModule {}

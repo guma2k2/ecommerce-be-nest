@@ -8,15 +8,15 @@ import { UserService } from "src/user/user.service";
 @Controller("user")
 @Auth(AuthType.Bearer)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<any> {
-    return ResponseUtil.successResponse(await this.userService.create(createUserDto));
-  }
+    @Post()
+    async create(@Body() createUserDto: CreateUserDto): Promise<any> {
+        return ResponseUtil.successResponse(await this.userService.create(createUserDto));
+    }
 
-  @Get()
-  async findAll() {
-    return ResponseUtil.successResponse(await this.userService.findAll());
-  }
+    @Get()
+    async findAll() {
+        return ResponseUtil.successResponse(await this.userService.findAll());
+    }
 }

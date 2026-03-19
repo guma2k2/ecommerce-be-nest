@@ -1,9 +1,9 @@
 import {
-  CanActivate,
-  ExecutionContext,
-  Inject,
-  Injectable,
-  UnauthorizedException,
+    CanActivate,
+    ExecutionContext,
+    Inject,
+    Injectable,
+    UnauthorizedException,
 } from "@nestjs/common";
 import type { ConfigType } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
@@ -13,28 +13,28 @@ import { REQUEST_USER_KEY } from "src/common/constant/auth.constants";
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
-  constructor(
-    private readonly jwtService: JwtService,
-    @Inject(jwtConfig.KEY) private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-  ) {}
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<Request>();
-    const token = this.extractTokenFromHeader(request);
-    console.log("receive token", token);
-    if (!token) {
-      throw new UnauthorizedException();
-    }
+    constructor(
+        private readonly jwtService: JwtService,
+        @Inject(jwtConfig.KEY) private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    ) {}
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const request = context.switchToHttp().getRequest<Request>();
+        const token = this.extractTokenFromHeader(request);
+        console.log("receive token", token);
+        if (!token) {
+            throw new UnauthorizedException();
+        }
 
-    try {
-      const payload = await this.jwtService.verifyAsync(token, this.jwtConfiguration);
-      request[REQUEST_USER_KEY] = payload;
-    } catch (error) {
-      throw new UnauthorizedException();
+        try {
+            const payload = await this.jwtService.verifyAsync(token, this.jwtConfiguration);
+            request[REQUEST_USER_KEY] = payload;
+        } catch (error) {
+            throw new UnauthorizedException();
+        }
+        return true;
     }
-    return true;
-  }
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [_, token] = request.headers?.authorization?.split(" ") ?? [];
-    return token;
-  }
+    private extractTokenFromHeader(request: Request): string | undefined {
+        const [_, token] = request.headers?.authorization?.split(" ") ?? [];
+        return token;
+    }
 }

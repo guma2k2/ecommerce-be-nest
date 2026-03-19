@@ -7,41 +7,41 @@ import { AuthType } from "src/common/enums/auth-type.enum";
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
-  private static readonly defaultAuthType = AuthType.Bearer;
-  private readonly authTypeGuardMap: Record<AuthType, CanActivate | CanActivate[]>;
-  constructor(
-    private readonly reflector: Reflector,
-    private readonly accessTokenGuard: AccessTokenGuard,
-  ) {
-    this.authTypeGuardMap = {
-      [AuthType.Bearer]: this.accessTokenGuard,
-      [AuthType.None]: { canActivate: () => true },
-    };
-  }
-
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const authTypes = this.reflector.getAllAndOverride<AuthType[]>(AUTH_TYPE_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]) ?? [AuthenticationGuard.defaultAuthType];
-
-    const guards = authTypes.map((type) => this.authTypeGuardMap[type]).flat();
-
-    let error: any;
-
-    for (const guard of guards) {
-      try {
-        const result = await Promise.resolve(guard.canActivate(context));
-        if (result) return true;
-      } catch (err) {
-        error = err;
-      }
+    private static readonly defaultAuthType = AuthType.Bearer;
+    private readonly authTypeGuardMap: Record<AuthType, CanActivate | CanActivate[]>;
+    constructor(
+        private readonly reflector: Reflector,
+        private readonly accessTokenGuard: AccessTokenGuard,
+    ) {
+        this.authTypeGuardMap = {
+            [AuthType.Bearer]: this.accessTokenGuard,
+            [AuthType.None]: { canActivate: () => true },
+        };
     }
 
-    if (error) {
-      throw error;
-    }
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const authTypes = this.reflector.getAllAndOverride<AuthType[]>(AUTH_TYPE_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]) ?? [AuthenticationGuard.defaultAuthType];
 
-    throw new UnauthorizedException();
-  }
+        const guards = authTypes.map((type) => this.authTypeGuardMap[type]).flat();
+
+        let error: any;
+
+        for (const guard of guards) {
+            try {
+                const result = await Promise.resolve(guard.canActivate(context));
+                if (result) return true;
+            } catch (err) {
+                error = err;
+            }
+        }
+
+        if (error) {
+            throw error;
+        }
+
+        throw new UnauthorizedException();
+    }
 }

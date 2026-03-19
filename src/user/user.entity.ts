@@ -4,25 +4,25 @@ import { Column, Entity } from "typeorm";
 
 @Entity({ name: "users" })
 export class User extends BaseEntity {
-  @Column()
-  first_name: string;
+    @Column()
+    first_name: string;
 
-  @Column()
-  last_name: string;
+    @Column()
+    last_name: string;
 
-  @Column()
-  email: string;
+    @Column()
+    email: string;
 
-  @Column({ length: 128 })
-  password: string;
+    @Column({ length: 128 })
+    password: string;
 
-  @Column()
-  is_active: boolean;
+    @Column()
+    is_active: boolean;
 
-  @Column({
-    type: "enum",
-    enum: UserRole,
-    default: UserRole.USER,
-  })
-  role: UserRole;
+    @Column({
+        type: "enum",
+        enum: UserRole,
+        default: UserRole.USER,
+    })
+    role: UserRole;
 }
