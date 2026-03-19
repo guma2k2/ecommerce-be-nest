@@ -4,7 +4,7 @@ import { Entity, JoinColumn, OneToOne } from "typeorm";
 
 @Entity()
 export class RefreshToken extends BaseEntity {
-  @OneToOne(() => User)
-  @JoinColumn({ name: "user_id" })
-  user: User;
+    @OneToOne(() => User)
+    @JoinColumn({ name: "user_id" })
+    user: User;
 }

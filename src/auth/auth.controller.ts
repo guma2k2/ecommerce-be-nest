@@ -9,20 +9,20 @@ import { RefreshTokenDto } from "src/auth/dto/refresh-token-dto";
 @Controller("auth")
 @Auth(AuthType.None)
 export class AuthController {
-  constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) {}
 
-  @Post("sign-up")
-  signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto);
-  }
+    @Post("sign-up")
+    signUp(@Body() signUpDto: SignUpDto) {
+        return this.authService.signUp(signUpDto);
+    }
 
-  @Post("sign-in")
-  signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto);
-  }
+    @Post("sign-in")
+    signIn(@Body() signInDto: SignInDto) {
+        return this.authService.signIn(signInDto);
+    }
 
-  @Post("refresh-token")
-  refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
-    return this.authService.refreshTokens(refreshTokenDto);
-  }
+    @Post("refresh-token")
+    refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+        return this.authService.refreshTokens(refreshTokenDto);
+    }
 }
