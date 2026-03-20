@@ -10,10 +10,10 @@ import { UserService } from "src/user/user.service";
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Post()
-    async create(@Body() createUserDto: CreateUserDto): Promise<any> {
-        return ResponseUtil.successResponse(await this.userService.create(createUserDto));
-    }
+    // @Post()
+    // async create(@Body() createUserDto: CreateUserDto): Promise<any> {
+    //     return ResponseUtil.successResponse(await this.userService.create(createUserDto));
+    // }
 
     @Get()
     async findAll() {
