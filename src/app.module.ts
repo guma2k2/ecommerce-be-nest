@@ -9,6 +9,8 @@ import { ZodValidationPipe } from "nestjs-zod";
 import KeyvRedis, { Keyv } from "@keyv/redis";
 import { CacheModule } from "@nestjs/cache-manager";
 import { CacheableMemory } from "cacheable";
+import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaModule } from "src/prisma/prisma.module";
 
 @Module({
     imports: [
@@ -30,6 +32,7 @@ import { CacheableMemory } from "cacheable";
         }),
         AuthModule,
         UserModule,
+        PrismaModule,
     ],
     controllers: [AppController],
     providers: [
