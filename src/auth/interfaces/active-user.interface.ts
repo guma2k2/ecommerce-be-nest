@@ -1,4 +1,4 @@
-import { UserRole } from "src/common/enums/user.enum";
+import { UserRole } from "generated/prisma/enums";
 
 export interface ActiveUserData {
     /*

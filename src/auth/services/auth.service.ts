@@ -7,17 +7,16 @@ import type { ConfigType } from "@nestjs/config";
 import { randomUUID } from "crypto";
 import { ActiveUserData } from "src/auth/interfaces/active-user.interface";
 import { SignUpDto } from "src/auth/dto/sign-up.dto";
-import { UserRole } from "src/common/enums/user.enum";
 import { BcryptService } from "src/auth/services/bcrypt.service";
 import { RefreshTokenDto } from "src/auth/dto/refresh-token-dto";
-import { RefreshTokenService } from "src/auth/services/refresh-token.service";
-import { User } from "generated/prisma/client";
+// import { RefreshTokenService } from "src/auth/services/refresh-token.service";
+import { User, UserRole } from "generated/prisma/client";
 @Injectable()
 export class AuthService {
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
-        private refreshTokenService: RefreshTokenService,
+        // private refreshTokenService: RefreshTokenService,
         @Inject(jwtConfig.KEY)
         private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
         private readonly bcryptService: BcryptService,
@@ -38,6 +37,7 @@ export class AuthService {
             last_name: signUpDto.last_name,
             password: encryptedPassword,
             is_active: true,
+            role: UserRole.ADMIN,
         };
         await this.userService.create(user);
     }
@@ -74,9 +74,9 @@ export class AuthService {
         console.log("refreshToken", refreshToken);
 
         // TODO: Insert refresh token to db
-        await this.refreshTokenService.save({
-            refreshToken: refreshTokenId,
-        });
+        // await this.refreshTokenService.save({
+        //     refreshToken: refreshTokenId,
+        // });
         return {
             accessToken,
             refreshToken,
@@ -98,12 +98,12 @@ export class AuthService {
                 throw new UnauthorizedException("User not found");
             }
 
-            const isValid = await this.refreshTokenService.validate(user.id, refreshTokenId);
-            if (!isValid) {
-                throw new UnauthorizedException("Refresh token is not valid");
-            }
+            // const isValid = await this.refreshTokenService.validate(user.id, refreshTokenId);
+            // if (!isValid) {
+            //     throw new UnauthorizedException("Refresh token is not valid");
+            // }
 
-            await this.refreshTokenService.delete(refreshTokenDto);
+            // await this.refreshTokenService.delete(refreshTokenDto);
 
             return this.generateToken(user);
         } catch (error) {
