@@ -9,16 +9,17 @@ import { ActiveUserData } from "src/auth/interfaces/active-user.interface";
 import { SignUpDto } from "src/auth/dto/sign-up.dto";
 import { BcryptService } from "src/auth/services/bcrypt.service";
 import { RefreshTokenDto } from "src/auth/dto/refresh-token-dto";
-// import { RefreshTokenService } from "src/auth/services/refresh-token.service";
 import { User, UserRole } from "generated/prisma/client";
+import { RedisService } from "src/redis/redis.service";
+import { InvalidatedRefreshTokenError } from "src/redis/invalidated-refresh-token.error";
 @Injectable()
 export class AuthService {
     constructor(
-        private userService: UserService,
-        private jwtService: JwtService,
-        // private refreshTokenService: RefreshTokenService,
         @Inject(jwtConfig.KEY)
         private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+        private userService: UserService,
+        private jwtService: JwtService,
+        private redisService: RedisService,
         private readonly bcryptService: BcryptService,
     ) {}
 
@@ -74,9 +75,7 @@ export class AuthService {
         console.log("refreshToken", refreshToken);
 
         // TODO: Insert refresh token to db
-        // await this.refreshTokenService.save({
-        //     refreshToken: refreshTokenId,
-        // });
+        await this.redisService.insert(user.id, refreshTokenId);
         return {
             accessToken,
             refreshToken,
@@ -98,12 +97,11 @@ export class AuthService {
                 throw new UnauthorizedException("User not found");
             }
 
-            // const isValid = await this.refreshTokenService.validate(user.id, refreshTokenId);
-            // if (!isValid) {
-            //     throw new UnauthorizedException("Refresh token is not valid");
-            // }
-
-            // await this.refreshTokenService.delete(refreshTokenDto);
+            const isValid = await this.redisService.validate(user.id, refreshTokenId);
+            if (!isValid) {
+                throw new InvalidatedRefreshTokenError("Refresh token is not valid");
+            }
+            await this.redisService.invalidate(user.id);
 
             return this.generateToken(user);
         } catch (error) {

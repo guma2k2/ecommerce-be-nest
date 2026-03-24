@@ -11,6 +11,7 @@ import { CacheModule } from "@nestjs/cache-manager";
 import { CacheableMemory } from "cacheable";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PrismaModule } from "src/prisma/prisma.module";
+import { RedisModule } from "src/redis/redis.module";
 
 @Module({
     imports: [
@@ -33,6 +34,7 @@ import { PrismaModule } from "src/prisma/prisma.module";
         AuthModule,
         UserModule,
         PrismaModule,
+        RedisModule,
     ],
     controllers: [AppController],
     providers: [
