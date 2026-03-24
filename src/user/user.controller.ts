@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { User } from "generated/prisma/client";
 import { Auth } from "src/auth/decorators/auth.decorator";
+import { ResponseData } from "src/common/dto/response-data.dto";
 import { AuthType } from "src/common/enums/auth-type.enum";
-import { ResponseUtil } from "src/common/utils/response.util";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
 import { UserService } from "src/user/user.service";
 
@@ -17,6 +18,7 @@ export class UserController {
 
     @Get()
     async findAll() {
-        return ResponseUtil.successResponse(await this.userService.findAll());
+        const users: User[] = await this.userService.findAll();
+        return ResponseData.success(users);
     }
 }
